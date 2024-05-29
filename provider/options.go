@@ -23,6 +23,7 @@ import (
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.10.0"
+	"google.golang.org/grpc/credentials"
 )
 
 // Option opts for opentelemetry tracer provider
@@ -56,6 +57,8 @@ type config struct {
 	textMapPropagator propagation.TextMapPropagator
 
 	meterProvider *metric.MeterProvider
+
+	gRPCCredentials *credentials.TransportCredentials
 }
 
 func newConfig(opts []Option) *config {
@@ -198,5 +201,12 @@ func WithSdkTracerProvider(sdkTracerProvider *sdktrace.TracerProvider) Option {
 func WithMeterProvider(meterProvider *metric.MeterProvider) Option {
 	return option(func(cfg *config) {
 		cfg.meterProvider = meterProvider
+	})
+}
+
+// WithTLSCredentials allows the connection to use TLS credentials
+func WithTLSCredentials(creds *credentials.TransportCredentials) Option {
+	return option(func(cfg *config) {
+		cfg.gRPCCredentials = creds
 	})
 }

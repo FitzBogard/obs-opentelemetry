@@ -94,6 +94,9 @@ func NewOpenTelemetryProvider(opts ...Option) OtelProvider {
 		if cfg.exportEnableCompression {
 			traceClientOpts = append(traceClientOpts, otlptracegrpc.WithCompressor("gzip"))
 		}
+		if cfg.gRPCCredentials != nil {
+			traceClientOpts = append(traceClientOpts, otlptracegrpc.WithTLSCredentials(*cfg.gRPCCredentials))
+		}
 
 		traceClient := otlptracegrpc.NewClient(traceClientOpts...)
 
